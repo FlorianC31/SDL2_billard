@@ -17,5 +17,11 @@ void NewBoule(Boule*, Color, int, int, int);
 
 void MoveBoule(Boule*, int);
 
+int ContactBoule(Boule*, Boule*);
+
+int ContactWall(Boule*);
+
+float GetVect(Coord*, Boule, Boule);
+
 
 #endif // BOULES_H_INCLUDED

@@ -44,6 +44,9 @@
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="struct.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="struct.h" />
 		<Extensions />
 	</Project>

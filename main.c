@@ -6,10 +6,6 @@
 #include "boules.h"
 
 
-#define SCREEN_WIDTH 1024
-#define SCREEN_HEIGHT 576
-#define NB_BOULES 16
-
 Color WHITE = {255, 255, 255};
 Color BLACK = {0, 0, 0};
 Color YELLOW = {255, 255, 0};
@@ -19,6 +15,7 @@ Color GREEN = {0, 255, 0};
 Color GREY = {127, 127, 127};
 
 void CreationBoules(Boule[]);
+void CreationHoles(Boule[]);
 
 int main(int argc, char* argv[])
 {
@@ -38,15 +35,17 @@ int main(int argc, char* argv[])
 
 
     // Boules creation
-    Boule boules[NB_BOULES];
+    Boule boules[NB_BOULES], holes[6];
     CreationBoules(boules);
+    CreationHoles(holes);
 
 
     int last_time = SDL_GetTicks();
     SDL_Event events;
     int run = 1;
+    int nb_contact = 0;
 
-    while (run) {
+    while (run && nb_contact>=0) {
         while (SDL_PollEvent(&events)) {
             switch(events.type){
             case SDL_WINDOWEVENT:
@@ -87,12 +86,24 @@ int main(int argc, char* argv[])
         int new_time = SDL_GetTicks();
 
         if (new_time - last_time >= 30){
-            // Physic calcul
+            // Displacements
             for (int i=0; i < NB_BOULES; i++){
                 if (boules[i].speed.x != 0 || boules[i].speed.x !=0){
                     MoveBoule(&boules[i], new_time - last_time);
                 }
             }
+
+            // Contacts
+            for (int i=0; i < NB_BOULES; i++){
+                if (boules[i].speed.x != 0 || boules[i].speed.x !=0)
+                    nb_contact += ContactWall(&boules[i]);
+                for (int j = i+1; j < NB_BOULES; j++){
+                    if (boules[i].speed.x != 0 || boules[i].speed.x !=0 || boules[j].speed.y != 0 || boules[j].speed.y !=0)
+                        nb_contact += ContactBoule(&boules[i], &boules[j]);
+                }
+            }
+
+
             last_time = new_time;
 
 
@@ -103,6 +114,8 @@ int main(int argc, char* argv[])
 
             for (int i=0; i < NB_BOULES; i++){
                 DrawBoule(boules[i], pRenderer);}
+            for (int i=0; i < 6; i++){
+                DrawBoule(holes[i], pRenderer);}
             SDL_RenderPresent(pRenderer);
         }
     }
@@ -119,7 +132,7 @@ void CreationBoules(Boule boules[]){
     int radius = 20;
 
     NewBoule(&boules[0], WHITE, 800, 300, radius);
-    boules[0].speed.x=-0.1;
+    boules[0].speed.x=-0.5;
 
     int x = 300, y = 300;
     NewBoule(&boules[1], YELLOW, x, y, radius);
@@ -146,3 +159,16 @@ void CreationBoules(Boule boules[]){
     NewBoule(&boules[14], YELLOW, x, y + radius * 2, radius);
     NewBoule(&boules[15], RED, x, y + radius *4, radius);
 }
+
+
+void CreationHoles(Boule holes[]){
+    int radius = 26;
+
+    NewBoule(&holes[0], BLACK, 0, 0, radius);
+    NewBoule(&holes[1], BLACK, SCREEN_WIDTH / 2, 0, radius);
+    NewBoule(&holes[2], BLACK, SCREEN_WIDTH, 0, radius);
+    NewBoule(&holes[3], BLACK, 0, SCREEN_HEIGHT, radius);
+    NewBoule(&holes[4], BLACK, SCREEN_WIDTH / 2, SCREEN_HEIGHT, radius);
+    NewBoule(&holes[5], BLACK, SCREEN_WIDTH, SCREEN_HEIGHT, radius);
+}
+
