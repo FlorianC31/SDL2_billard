@@ -1,15 +1,15 @@
 # depslib dependency file v1.0
-1611136972 source:/home/florian/Documents/Dev/Billard/boules.c
+1611172418 source:/home/florian/Documents/Dev/Billard/boules.c
 	"boules.h"
 
-1611136748 source:/home/florian/Documents/Dev/Billard/main.c
+1611172445 source:/home/florian/Documents/Dev/Billard/main.c
 	<stdio.h>
 	<stdlib.h>
 	<SDL2/SDL.h>
 	"struct.h"
 	"boules.h"
 
-1611136993 /home/florian/Documents/Dev/Billard/struct.h
+1611172461 /home/florian/Documents/Dev/Billard/struct.h
 	<SDL2/SDL.h>
 	<math.h>
 
@@ -545,7 +545,7 @@
 	"begin_code.h"
 	"close_code.h"
 
-1611136717 /home/florian/Documents/Dev/Billard/boules.h
+1611171298 /home/florian/Documents/Dev/Billard/boules.h
 	"struct.h"
 
 1568752452 /usr/include/SDL/SDL.h
@@ -733,6 +733,6 @@
 	"begin_code.h"
 	"close_code.h"
 
-1611135546 source:/home/florian/Documents/Dev/Billard/struct.c
+1611169046 source:/home/florian/Documents/Dev/Billard/struct.c
 	"struct.h"
 

@@ -17,6 +17,10 @@ typedef struct COORD{
 }Coord;
 
 
+float Degres(float);
+
+float Radians(float);
+
 float VectResult(Coord);
 
 float ScalProdVect(Coord, Coord);
@@ -28,5 +32,9 @@ void UnitVect(Coord*, Coord);
 void ProjVect(Coord*, Coord, Coord);
 
 void PrintVect(char title[], Coord);
+
+float GetDistance(Coord, Coord);
+
+float Signe(float);
 
 #endif // STRUCT_H_INCLUDED

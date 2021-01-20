@@ -38,12 +38,18 @@ int main(int argc, char* argv[])
     Boule boules[NB_BOULES], holes[6];
     CreationBoules(boules);
     CreationHoles(holes);
+    Queue queue;
+    int queue_length = 200;
+    DefineQueue(&queue, &boules[0], BLACK, queue_length, 45);
 
 
     int last_time = SDL_GetTicks();
     SDL_Event events;
     int run = 1;
     int nb_contact = 0;
+
+    Coord click_pos;
+    int d_init, clicked = 0;
 
     while (run && nb_contact>=0) {
         while (SDL_PollEvent(&events)) {
@@ -54,7 +60,6 @@ int main(int argc, char* argv[])
                     break;
                 }
             case SDL_KEYDOWN:
-                SDL_Log("+key");
 
                 switch (events.key.keysym.sym)
                 {
@@ -66,19 +71,34 @@ int main(int argc, char* argv[])
 
                 break;
             case SDL_KEYUP:
-                SDL_Log("-key");
                 break;
             case SDL_MOUSEMOTION: // Déplacement de souris
-                SDL_Log("Mouvement de souris");
+                if(clicked){
+                    click_pos.x = events.button.x;
+                    click_pos.y = events.button.y;
+                    MoveQueue(&queue, d_init, click_pos);
+                }
                 break;
             case SDL_MOUSEBUTTONDOWN: // Click de souris
-                SDL_Log("+clic");
+                if (queue.displayed){
+                    click_pos.x = events.button.x;
+                    click_pos.y = events.button.y;
+
+                    d_init = (int)GetDistance(click_pos, boules[0].position);
+
+                    MoveQueue(&queue, d_init, click_pos);
+
+                    clicked = 1;
+                }
+
                 break;
             case SDL_MOUSEBUTTONUP: // Click de souris relâché
-                SDL_Log("-clic");
+                if (queue.displayed){
+                    clicked = 0;
+                    ShotQueue(&queue);
+                }
                 break;
             case SDL_MOUSEWHEEL: // Scroll de la molette
-                SDL_Log("wheel");
                 break;
             }
         }
@@ -87,11 +107,15 @@ int main(int argc, char* argv[])
 
         if (new_time - last_time >= 30){
             // Displacements
+            int nb_move = 0;
             for (int i=0; i < NB_BOULES; i++){
                 if (boules[i].speed.x != 0 || boules[i].speed.x !=0){
                     MoveBoule(&boules[i], new_time - last_time);
+                    nb_move++;
                 }
             }
+            if (nb_move ==0){
+                queue.displayed = 1;}
 
             // Contacts
             for (int i=0; i < NB_BOULES; i++){
@@ -116,6 +140,8 @@ int main(int argc, char* argv[])
                 DrawBoule(boules[i], pRenderer);}
             for (int i=0; i < 6; i++){
                 DrawBoule(holes[i], pRenderer);}
+            if (queue.displayed)
+                DrawQueue(&queue, pRenderer);
             SDL_RenderPresent(pRenderer);
         }
     }
@@ -132,7 +158,7 @@ void CreationBoules(Boule boules[]){
     int radius = 20;
 
     NewBoule(&boules[0], WHITE, 800, 300, radius);
-    boules[0].speed.x=-0.5;
+    //boules[0].speed.x = -2;
 
     int x = 300, y = 300;
     NewBoule(&boules[1], YELLOW, x, y, radius);
@@ -162,7 +188,7 @@ void CreationBoules(Boule boules[]){
 
 
 void CreationHoles(Boule holes[]){
-    int radius = 26;
+    int radius = 30;
 
     NewBoule(&holes[0], BLACK, 0, 0, radius);
     NewBoule(&holes[1], BLACK, SCREEN_WIDTH / 2, 0, radius);
