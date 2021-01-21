@@ -19,6 +19,11 @@ typedef struct QUEUE{
     float angle;
 }Queue;
 
+typedef struct WALL{
+    Coord point_A, point_B, vect_u;
+    int length;
+}Wall;
+
 void DrawBoule(Boule, SDL_Renderer*);
 
 void NewBoule(Boule*, Color, int, int, int);
@@ -27,7 +32,7 @@ void MoveBoule(Boule*, int);
 
 int ContactBoule(Boule*, Boule*);
 
-int ContactWall(Boule*);
+//int ContactWall(Boule*);
 
 void GetVect(Coord*, Boule, Boule);
 
@@ -38,6 +43,14 @@ void DrawQueue(Queue*, SDL_Renderer*);
 void ShotQueue(Queue*);
 
 void MoveQueue(Queue*, int, Coord);
+
+void NewWall(Wall*, int, int, int, int);
+
+void ContactTable(Boule*, Wall[]);
+
+void ContactWallListe(Boule*, Wall[], int[], int);
+
+int ContactWall(Boule*, Wall);
 
 
 #endif // BOULES_H_INCLUDED

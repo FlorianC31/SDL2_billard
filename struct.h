@@ -2,11 +2,14 @@
 #define STRUCT_H_INCLUDED
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 #include <math.h>
 
-#define SCREEN_WIDTH 1024
-#define SCREEN_HEIGHT 576
+#define ITER_TIME 30
+#define SCREEN_WIDTH 1267
+#define SCREEN_HEIGHT 706
 #define NB_BOULES 16
+#define NB_WALLS 18
 
 typedef struct COLOR{
     int r,g,b;

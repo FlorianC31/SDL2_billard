@@ -2,6 +2,7 @@
 #include <stdlib.h>
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 #include "struct.h"
 #include "boules.h"
 
@@ -16,6 +17,7 @@ Color GREY = {127, 127, 127};
 
 void CreationBoules(Boule[]);
 void CreationHoles(Boule[]);
+void CreationWalls(Wall[]);
 
 int main(int argc, char* argv[])
 {
@@ -34,10 +36,23 @@ int main(int argc, char* argv[])
     }
 
 
-    // Boules creation
+    // creation des objets
+
+    SDL_Surface* fond = IMG_Load("ressources/fond.png");
+    if(!fond)
+    {
+        printf("Erreur de chargement de l'image : %s",SDL_GetError());
+        return -1;
+    }
+    SDL_Texture* background = SDL_CreateTextureFromSurface(pRenderer,fond);
+    SDL_Rect bg_position = {0, 0};
+    SDL_QueryTexture(background, NULL, NULL, &bg_position.w, &bg_position.h);
+
     Boule boules[NB_BOULES], holes[6];
+    Wall walls[NB_WALLS];
     CreationBoules(boules);
     CreationHoles(holes);
+    CreationWalls(walls);
     Queue queue;
     int queue_length = 200;
     DefineQueue(&queue, &boules[0], BLACK, queue_length, 45);
@@ -52,6 +67,7 @@ int main(int argc, char* argv[])
     int d_init, clicked = 0;
 
     while (run && nb_contact>=0) {
+        SDL_Delay(ITER_TIME);
         while (SDL_PollEvent(&events)) {
             switch(events.type){
             case SDL_WINDOWEVENT:
@@ -105,7 +121,7 @@ int main(int argc, char* argv[])
 
         int new_time = SDL_GetTicks();
 
-        if (new_time - last_time >= 30){
+        if (new_time - last_time >= ITER_TIME){
             // Displacements
             int nb_move = 0;
             for (int i=0; i < NB_BOULES; i++){
@@ -120,7 +136,8 @@ int main(int argc, char* argv[])
             // Contacts
             for (int i=0; i < NB_BOULES; i++){
                 if (boules[i].speed.x != 0 || boules[i].speed.x !=0)
-                    nb_contact += ContactWall(&boules[i]);
+                    //nb_contact += ContactWall(&boules[i]);
+                    ContactTable(&boules[i], walls);
                 for (int j = i+1; j < NB_BOULES; j++){
                     if (boules[i].speed.x != 0 || boules[i].speed.x !=0 || boules[j].speed.y != 0 || boules[j].speed.y !=0)
                         nb_contact += ContactBoule(&boules[i], &boules[j]);
@@ -132,14 +149,17 @@ int main(int argc, char* argv[])
 
 
             // Rendering
-            Color* color = &GREEN;
-            SDL_SetRenderDrawColor(pRenderer, color->r, color->g, color->b, 255);
+
+            //Color* color = &GREEN;
+            //SDL_SetRenderDrawColor(pRenderer, color->r, color->g, color->b, 255);
             SDL_RenderClear(pRenderer);
 
+            SDL_RenderCopy(pRenderer, background, NULL, &bg_position);
+
+            //for (int i=0; i < 6; i++){
+            //    DrawBoule(holes[i], pRenderer);}
             for (int i=0; i < NB_BOULES; i++){
                 DrawBoule(boules[i], pRenderer);}
-            for (int i=0; i < 6; i++){
-                DrawBoule(holes[i], pRenderer);}
             if (queue.displayed)
                 DrawQueue(&queue, pRenderer);
             SDL_RenderPresent(pRenderer);
@@ -155,7 +175,7 @@ int main(int argc, char* argv[])
 
 
 void CreationBoules(Boule boules[]){
-    int radius = 20;
+    int radius = 14;
 
     NewBoule(&boules[0], WHITE, 800, 300, radius);
     //boules[0].speed.x = -2;
@@ -197,4 +217,27 @@ void CreationHoles(Boule holes[]){
     NewBoule(&holes[4], BLACK, SCREEN_WIDTH / 2, SCREEN_HEIGHT, radius);
     NewBoule(&holes[5], BLACK, SCREEN_WIDTH, SCREEN_HEIGHT, radius);
 }
+
+void CreationWalls(Wall wall[]){
+
+    NewWall(&wall[0], 73, 106, 73, 599);
+    NewWall(&wall[1], 73, 599, 41, 633);
+    NewWall(&wall[2], 73, 666, 110, 633);
+    NewWall(&wall[3], 110, 633, 603, 633);
+    NewWall(&wall[4], 603, 633, 609, 651);
+    NewWall(&wall[5], 658, 651, 664, 633);
+    NewWall(&wall[6], 664, 633, 1157, 633);
+    NewWall(&wall[7], 1157, 633, 1194, 666);
+    NewWall(&wall[8], 1226, 633, 1194, 599);
+    NewWall(&wall[9], 1194, 599, 1194, 106);
+    NewWall(&wall[10], 41, 72, 73, 106);
+    NewWall(&wall[11], 110, 72, 73, 39);
+    NewWall(&wall[12], 603, 72, 110, 72);
+    NewWall(&wall[13], 609, 54, 603, 72);
+    NewWall(&wall[14], 664, 72, 658, 54);
+    NewWall(&wall[15], 1157, 72, 664, 72);
+    NewWall(&wall[16], 1194, 39, 1157, 72);
+    NewWall(&wall[17], 1194, 106, 1226, 72);
+}
+
 

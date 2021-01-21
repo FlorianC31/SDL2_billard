@@ -34,7 +34,7 @@
 			<Add directory="/usr/include" />
 		</Compiler>
 		<Linker>
-			<Add option="-lSDL2main -lSDL2 -lm" />
+			<Add option="-lSDL2main -lSDL2 -lSDL2_image -lm" />
 			<Add directory="/usr/lib/x86_64-linux-gnu" />
 		</Linker>
 		<Unit filename="boules.c">
