@@ -20,6 +20,27 @@ typedef struct COORD{
 }Coord;
 
 
+typedef struct BOULE{
+    Color color;
+    Coord position, speed;
+    int radius, displayed;
+}Boule;
+
+typedef struct QUEUE{
+    Boule* boule;
+    Coord vect;
+    Color color;
+    int length, force, displayed;
+    float angle;
+}Queue;
+
+typedef struct WALL{
+    Coord point_A, point_B, vect_u;
+    float length;
+}Wall;
+
+
+
 float Degres(float);
 
 float Radians(float);

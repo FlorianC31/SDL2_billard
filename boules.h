@@ -4,25 +4,6 @@
 #include "struct.h"
 
 
-typedef struct BOULE{
-    Color color;
-    Coord position;
-    Coord speed;
-    int radius;
-}Boule;
-
-typedef struct QUEUE{
-    Boule* boule;
-    Coord vect;
-    Color color;
-    int length, force, displayed;
-    float angle;
-}Queue;
-
-typedef struct WALL{
-    Coord point_A, point_B, vect_u;
-    int length;
-}Wall;
 
 void DrawBoule(Boule, SDL_Renderer*);
 
@@ -44,13 +25,7 @@ void ShotQueue(Queue*);
 
 void MoveQueue(Queue*, int, Coord);
 
-void NewWall(Wall*, int, int, int, int);
-
-void ContactTable(Boule*, Wall[]);
-
-void ContactWallListe(Boule*, Wall[], int[], int);
-
-int ContactWall(Boule*, Wall);
+void ContactHole(Boule*, Boule);
 
 
 #endif // BOULES_H_INCLUDED

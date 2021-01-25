@@ -5,6 +5,7 @@
 #include <SDL2/SDL_image.h>
 #include "struct.h"
 #include "boules.h"
+#include "wall.h"
 
 
 Color WHITE = {255, 255, 255};
@@ -135,12 +136,16 @@ int main(int argc, char* argv[])
 
             // Contacts
             for (int i=0; i < NB_BOULES; i++){
-                if (boules[i].speed.x != 0 || boules[i].speed.x !=0)
-                    //nb_contact += ContactWall(&boules[i]);
-                    ContactTable(&boules[i], walls);
-                for (int j = i+1; j < NB_BOULES; j++){
-                    if (boules[i].speed.x != 0 || boules[i].speed.x !=0 || boules[j].speed.y != 0 || boules[j].speed.y !=0)
-                        nb_contact += ContactBoule(&boules[i], &boules[j]);
+                if (boules[i].displayed){
+                    if (boules[i].speed.x != 0 || boules[i].speed.x !=0)
+                        ContactTable(&boules[i], walls);
+                    for (int j = i+1; j < NB_BOULES; j++){
+                        if (boules[i].speed.x != 0 || boules[i].speed.x !=0 || boules[j].speed.y != 0 || boules[j].speed.y !=0)
+                            nb_contact += ContactBoule(&boules[i], &boules[j]);
+                    }
+                    for (int j = 0; j < 6; j++){
+                        ContactHole(&boules[i], holes[j]);
+                    }
                 }
             }
 
@@ -150,18 +155,29 @@ int main(int argc, char* argv[])
 
             // Rendering
 
-            //Color* color = &GREEN;
-            //SDL_SetRenderDrawColor(pRenderer, color->r, color->g, color->b, 255);
-            SDL_RenderClear(pRenderer);
+            //SDL_SetRenderDrawColor(pRenderer, GREEN.r, GREEN.g, GREEN.b, 255);
+            //SDL_RenderClear(pRenderer);
 
             SDL_RenderCopy(pRenderer, background, NULL, &bg_position);
 
-            //for (int i=0; i < 6; i++){
+
+
             //    DrawBoule(holes[i], pRenderer);}
             for (int i=0; i < NB_BOULES; i++){
-                DrawBoule(boules[i], pRenderer);}
+                if (boules[i].displayed){
+                    DrawBoule(boules[i], pRenderer);
+                }
+            }
+
             if (queue.displayed)
                 DrawQueue(&queue, pRenderer);
+
+            //for (int i=0; i < NB_WALLS; i++){
+            //    DrawWall(walls[i], pRenderer, 0);}
+
+            //for (int i=0; i < 6; i++){
+            //    DrawBoule(holes[i], pRenderer);}
+
             SDL_RenderPresent(pRenderer);
         }
     }
@@ -208,14 +224,14 @@ void CreationBoules(Boule boules[]){
 
 
 void CreationHoles(Boule holes[]){
-    int radius = 30;
+    int radius = 34;
 
-    NewBoule(&holes[0], BLACK, 0, 0, radius);
-    NewBoule(&holes[1], BLACK, SCREEN_WIDTH / 2, 0, radius);
-    NewBoule(&holes[2], BLACK, SCREEN_WIDTH, 0, radius);
-    NewBoule(&holes[3], BLACK, 0, SCREEN_HEIGHT, radius);
-    NewBoule(&holes[4], BLACK, SCREEN_WIDTH / 2, SCREEN_HEIGHT, radius);
-    NewBoule(&holes[5], BLACK, SCREEN_WIDTH, SCREEN_HEIGHT, radius);
+    NewBoule(&holes[0], BLUE, 62, 57, radius);
+    NewBoule(&holes[1], BLUE, 633, 37, radius);
+    NewBoule(&holes[2], BLUE, 1204, 57, radius);
+    NewBoule(&holes[3], BLUE, 62, 648, radius);
+    NewBoule(&holes[4], BLUE, 633 ,668, radius);
+    NewBoule(&holes[5], BLUE, 1204, 648, radius);
 }
 
 void CreationWalls(Wall wall[]){
